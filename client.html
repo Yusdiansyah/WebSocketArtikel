@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+  <input type="text" id="messageInput" placeholder="Enter message">
+  <button onclick="sendMessage()">Send</button>
+  <div id="messages"></div>
+
+  <script>
+    // Connect to WebSocket server
+    const ws = new WebSocket('ws://localhost:8080');
+    const messagesDiv = document.getElementById('messages');
+
+    // Connection opened
+    ws.addEventListener('open', (event) => {
+      addMessageToDiv('Connected to server');
+    });
+
+    // Listen for messages from server
+    ws.addEventListener('message', (event) => {
+      addMessageToDiv(` ${event.data}`);
+    });
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value;
+      if (message) {
+        ws.send(message);
+        addMessageToDiv(`Kamu mengirim: ${message}`);
+        input.value = '';
+      }
+    }
+
+    function addMessageToDiv(message) {
+      const p = document.createElement('p');
+      p.textContent = message;
+      messagesDiv.appendChild(p);
+    }
+  </script>
+</body>
+
+</html>
